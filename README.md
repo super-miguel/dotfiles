@@ -29,6 +29,7 @@ brew install \
   kubectl \
   git-flow \
   tmux \
+  tpm \
   stow \
   zsh-autosuggestions \
   zsh-syntax-highlighting
@@ -52,6 +53,10 @@ source ~/.zshrc
 ## Tmux
 
 This repo includes a comprehensive `.tmux.conf` with the Catppuccin theme, optimized keybinds, and session management.
+
+### Installation
+
+TPM (Tmux Plugin Manager) is installed via Homebrew and will automatically install plugins defined in `.tmux.conf`.
 
 
 ### Keybinds
@@ -92,14 +97,15 @@ twork      # Create/attach to "work" session
 ### Usage
 
 ```bash
-# Start tmux and install plugins (TPM):
+# Start tmux (plugins will be automatically installed by TPM):
 tmux
-# Install plugins: press Ctrl-a then I (capital i)
 
 # Or use helper functions:
 tdev       # Start development session
 twork      # Start work session
 ```
+
+**Note:** If you need to manually install/update plugins, press `Ctrl-a` then `I` (capital i) while in tmux.
 
 ## Manage dotfiles with GNU Stow (stew)
 
