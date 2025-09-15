@@ -51,20 +51,55 @@ source ~/.zshrc
 
 ## Tmux
 
-This repo includes a `.tmux.conf` that bootstraps TPM and loads the Catppuccin theme (flavour: mocha).
+This repo includes a comprehensive `.tmux.conf` with the Catppuccin theme, optimized keybinds, and session management.
 
-Usage:
+
+### Keybinds
+
+#### Basic Navigation
+- `Ctrl-a r` - Reload tmux config
+- `Ctrl-a |` - Split window horizontally
+- `Ctrl-a -` - Split window vertically
+- `Ctrl-a x` - Kill current pane
+- `Ctrl-a Space` - Toggle to last window
+
+#### Pane Navigation
+- `Ctrl-a + h/j/k/l` - Vim-style pane navigation (h=left, j=down, k=up, l=right)
+- `Ctrl-a + H/J/K/L` - Vim-style pane resizing (H=left, J=down, K=up, L=right)
+
+#### Window Management
+- `Alt + 1-9` - Switch to window 1-9
+- `Alt + 0` - Switch to window 10
+- `Alt + n` - Create new window
+
+### Aliases & Functions
 
 ```bash
-# Start tmux, then install plugins (TPM):
-tmux
-# Verify prefix works: press Ctrl-b then ? to open tmux help
-# Install plugins: press Ctrl-b then I (capital i)
+# Basic tmux commands
+t          # tmux
+ta         # tmux attach
+tat <name> # attach to specific session
+tnew       # new session
+tls        # list sessions
+tkill      # kill session
+tkillall   # kill all sessions
+
+# Session helpers
+tdev       # Create/attach to "dev" session
+twork      # Create/attach to "work" session
 ```
 
-If TPM is missing, it will auto-install on first start.
+### Usage
 
-To change Catppuccin flavour, edit `~/.tmux.conf` and set one of: latte, frappe, macchiato, mocha.
+```bash
+# Start tmux and install plugins (TPM):
+tmux
+# Install plugins: press Ctrl-a then I (capital i)
+
+# Or use helper functions:
+tdev       # Start development session
+twork      # Start work session
+```
 
 ## Manage dotfiles with GNU Stow (stew)
 
@@ -81,3 +116,4 @@ stow -v -t ~ .
 # stow -v -t ~ zsh
 # stow -v -t ~ tmux
 ```
+

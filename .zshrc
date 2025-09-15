@@ -1,39 +1,97 @@
-# Created by newuser for 5.9
-eval "$(starship init zsh)"
+# ~/.tmux.conf
 
+# Options to make tmux more pleasant
+set -g mouse on
+set -g default-terminal "tmux-256color"
 
-alias k="kubectl"
-alias ls="lsd"
-alias vim="nvim"
-alias f="fuck"
-alias cat="bat"
+# Start window numbering at 1 instead of 0
+set -g base-index 1
+setw -g pane-base-index 1
 
-eval $(thefuck --alias)
-eval "$(mcfly init zsh)"
+# Change prefix key to Ctrl-a (easier than Ctrl-b)
+set -g prefix C-a
+unbind C-b
 
-# kubectl autocompletion
-autoload -Uz compinit
-compinit
-source <(kubectl completion zsh)
+# Reload config file
+bind r source-file ~/.tmux.conf \; display "Config reloaded!"
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# Split panes using | and -
+bind | split-window -h
+bind - split-window -v
+unbind '"'
+unbind %
 
-# FZF
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# Switch panes using vim-style hjkl (after prefix)
 
-# direnv 
-eval "$(direnv hook zsh)"
-eval "$(uv generate-shell-completion zsh)"
-eval "$(mise activate zsh)"
+# Resize panes using vim-style HJKL (after prefix)
+bind H resize-pane -L 5
+bind J resize-pane -D 5
+bind K resize-pane -U 5
+bind L resize-pane -R 5
 
-# Homebrew zsh plugins
-# zsh-autosuggestions should be sourced after completion is set up
-if [ -f "$(brew --prefix)"/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
-  source "$(brew --prefix)"/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-fi
+# Switch windows using Alt+number (1-indexed)
+bind -n M-1 select-window -t 1
+bind -n M-2 select-window -t 2
+bind -n M-3 select-window -t 3
+bind -n M-4 select-window -t 4
+bind -n M-5 select-window -t 5
+bind -n M-6 select-window -t 6
+bind -n M-7 select-window -t 7
+bind -n M-8 select-window -t 8
+bind -n M-9 select-window -t 9
+bind -n M-0 select-window -t 10
 
-# zsh-syntax-highlighting must be last
-if [ -f "$(brew --prefix)"/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
-  source "$(brew --prefix)"/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-fi
+# Quick new window
+bind -n M-n new-window
+
+# Quick kill pane
+bind x kill-pane
+
+# Toggle last window
+bind Space last-window
+
+# Additional pane switching options
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+
+# Enable automatic window renaming
+set -g automatic-rename on
+set -g automatic-rename-format "#{b:pane_current_path}"
+
+# Allow applications to change window titles
+set -g allow-rename on
+
+# Configure the catppuccin plugin
+set -g @catppuccin_flavor "mocha"
+set -g @catppuccin_window_status_style "rounded"
+
+# Configure catppuccin status modules (keep application and session, remove cpu/battery)
+set -g @catppuccin_status_modules_right "application session"
+set -g @catppuccin_status_modules_left ""
+
+# Window title configuration
+set -g @catppuccin_window_text "#W"
+set -g @catppuccin_window_current_text "#W"
+
+# Additional window title settings
+set -g set-titles on
+set -g set-titles-string "#T"
+
+# Load catppuccin
+run ~/.tmux/plugins/tmux/catppuccin.tmux
+
+# Override catppuccin status after plugin loads
+set -g @catppuccin_status_modules_right ""
+set -g @catppuccin_status_modules_left ""
+
+# Make the status line pretty and add some modules
+set -g status-right-length 100
+set -g status-left-length 100
+set -g status-left ""
+set -g status-right ""
+
+# Initialize TPM (keep this line at the very bottom)
+run '~/.tmux/plugins/tpm/tpm'
+
