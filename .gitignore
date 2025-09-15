@@ -1,2 +1,40 @@
-# Neovim configuration
+# Python cache and bytecode
+**/__pycache__/
+*.py[cod]
+*.pyo
+
+# macOS noise files
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+
+# Editor backups and swap
+*~
+*.swp
+*.swo
+*.sw?
+
+# IDE settings
+.idea/
+.vscode/
+
+# Shell/editor histories (never commit)
+.zsh_history
+.bash_history
+.python_history
+
+# direnv and virtual envs
+.direnv/
+.venv/
+venv/
+
+# tmux runtime data (plugins, sessions)
+.tmux/plugins/
+.tmux/resurrect/
+
+# Neovim local state (ignore full config if you manage it elsewhere)
 .config/nvim

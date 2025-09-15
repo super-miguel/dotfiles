@@ -1,8 +1,6 @@
 # Created by newuser for 5.9
 eval "$(starship init zsh)"
 
-plugins=(git wd docker git-flow brew history zsh-autosuggestions zsh-syntax-highlighting web-search kubectl fzf-tab)
-
 
 alias k="kubectl"
 alias ls="lsd"
@@ -13,7 +11,7 @@ alias cat="bat"
 eval $(thefuck --alias)
 eval "$(mcfly init zsh)"
 
-#kubectl autocompletion
+# kubectl autocompletion
 autoload -Uz compinit
 compinit
 source <(kubectl completion zsh)
@@ -28,3 +26,14 @@ source <(kubectl completion zsh)
 eval "$(direnv hook zsh)"
 eval "$(uv generate-shell-completion zsh)"
 eval "$(mise activate zsh)"
+
+# Homebrew zsh plugins
+# zsh-autosuggestions should be sourced after completion is set up
+if [ -f "$(brew --prefix)"/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+  source "$(brew --prefix)"/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
+
+# zsh-syntax-highlighting must be last
+if [ -f "$(brew --prefix)"/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
+  source "$(brew --prefix)"/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
