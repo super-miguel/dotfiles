@@ -38,3 +38,6 @@ venv/
 
 # Neovim local state (ignore full config if you manage it elsewhere)
 .config/nvim
+.config/raycast
+.config/zed
+.config/thefuck
