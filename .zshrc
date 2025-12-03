@@ -1,6 +1,15 @@
 # .zshrc
 eval "$(starship init zsh)"
 
+# Auto-start tmux in normal terminals, but NOT in Cursor (TERM_PROGRAM=vscode)
+if command -v tmux &> /dev/null && [ -z "$TMUX" ] && [ "$TERM_PROGRAM" != "vscode" ]; then
+  if tmux has-session 2>/dev/null; then
+    exec tmux attach-session
+  else
+    exec tmux new-session
+  fi
+fi
+
 # General aliases
 alias k="kubectl"
 alias ls="lsd"
@@ -65,4 +74,3 @@ fi
 if [ -f "$(brew --prefix)"/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
   source "$(brew --prefix)"/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
-

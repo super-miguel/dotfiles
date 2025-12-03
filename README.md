@@ -63,7 +63,7 @@ TPM (Tmux Plugin Manager) is installed via Homebrew and will automatically insta
 
 #### Basic Navigation
 - `Ctrl-a r` - Reload tmux config
-- `Ctrl-a |` - Split window horizontally
+- `Ctrl-a ;` - Split window horizontally
 - `Ctrl-a -` - Split window vertically
 - `Ctrl-a x` - Kill current pane
 - `Ctrl-a Space` - Toggle to last window
@@ -73,9 +73,9 @@ TPM (Tmux Plugin Manager) is installed via Homebrew and will automatically insta
 - `Ctrl-a + H/J/K/L` - Vim-style pane resizing (H=left, J=down, K=up, L=right)
 
 #### Window Management
-- `Alt + 1-9` - Switch to window 1-9
-- `Alt + 0` - Switch to window 10
-- `Alt + n` - Create new window
+- `Option + 1-9` - Switch to window 1-9
+- `Option + 0` - Switch to window 10
+- `Option + n` - Create new window
 
 ### Aliases & Functions
 
@@ -122,4 +122,3 @@ stow -v -t ~ .
 # stow -v -t ~ zsh
 # stow -v -t ~ tmux
 ```
-
