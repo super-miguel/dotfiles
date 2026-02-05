@@ -1,6 +1,8 @@
 # .zshrc
-# No-op for Cursor IDE shell integration (avoids "command not found: dump_zsh_state")
-dump_zsh_state() { :; }
+# Skip loading the rest when Cursor Agent is running (avoids tmux, starship, etc. in agent shell)
+if [[ "$PAGER" == "head -n 10000 | cat" || "$COMPOSER_NO_INTERACTION" == "1" ]]; then
+  return
+fi
 
 # History: big, shared across sessions, no dupes, with timestamps
 HISTSIZE=50000

@@ -4,13 +4,13 @@ Ghostty + zsh + Starship, with tools installed via Homebrew.
 
 ## Quick start
 
-1. Install Homebrew (macOS):
+1) Install Homebrew (macOS):
 
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
-1. Install and configure (from Brewfile):
+2) Install and configure (from Brewfile):
 
 ```bash
 cd ~/dotfiles
@@ -24,13 +24,13 @@ git config --global delta.dark true
 git config --global merge.conflictStyle zdiff3
 ```
 
-1. Reload your shell:
+3) Reload your shell:
 
 ```bash
 source ~/.zshrc
 ```
 
-1. (Optional) Keep everything updated — run periodically (e.g. weekly):
+4) (Optional) Keep everything updated — run periodically (e.g. weekly):
 
 ```bash
 brew update && brew upgrade && brew upgrade --cask --greedy && brew autoremove && brew cleanup
@@ -43,6 +43,8 @@ brew update && brew upgrade && brew upgrade --cask --greedy && brew autoremove &
 - **cleanup** — remove old versions and prune cache
 
 To update the Brewfile from your current system (e.g. after installing something new): `brew bundle dump --file=~/dotfiles/Brewfile --force`
+
+`.zshrc` includes a guard at the top so Cursor Agent shells skip the rest of the config (no tmux, starship, etc.) when `PAGER` or `COMPOSER_NO_INTERACTION` is set.
 
 ## Core tools reference
 
@@ -85,8 +87,8 @@ Shows directory, git branch/status, **Python** (venv + version when in a project
 ### History
 
 - **50k entries**, shared across sessions, no duplicates. Commands starting with a space are not saved.
-- `**hist**` — FZF over history; pick a line and it’s pasted for you to run or edit. Type to filter.
-- `**hist -n**` — Numbered history (for `!123`).
+- **`hist`** — FZF over history; pick a line and it’s pasted for you to run or edit. Type to filter.
+- **`hist -n`** — Numbered history (for `!123`).
 - **Ctrl-R** — mcfly (fuzzy reverse search, smart ordering).
 - **Up/Down** — With text on the line, zsh-history-substring-search cycles only matching history lines.
 
@@ -98,10 +100,10 @@ Shows directory, git branch/status, **Python** (venv + version when in a project
 
 ### Kubectl
 
-- `**k**` — `kubectl`. **kgp** get pods, **kgs** get svc, **kgd** deploy, **kgn** nodes, **kga** get all.
+- **`k`** — `kubectl`. **kgp** get pods, **kgs** get svc, **kgd** deploy, **kgn** nodes, **kga** get all.
 - **kgpw** — get pods -w (watch). **kd** / **kdp** describe. **kdel** delete. **kaf** / **kdf** apply/delete -f.
 - **kctx** / **kns** — switch context / namespace. **klog** logs. **kexec** exec -it. **k9** — k9s TUI.
-- `**kctxf**` / `**knsf**` — fzf pick context or namespace and switch (no typing names).
+- **`kctxf`** / **`knsf`** — fzf pick context or namespace and switch (no typing names).
 
 ## Tmux
 
@@ -166,17 +168,11 @@ twork      # Start work session
 
 **Note:** If you need to manually install/update plugins, press `Ctrl-a` then `I` (capital i) while in tmux.
 
-### Cursor + tmux troubleshooting
-
-- **Launch Cursor outside tmux** — Open Cursor from the Dock/Spotlight or from a terminal *before* attaching to tmux. Do not run the Cursor GUI from inside a tmux pane; the integrated terminal inside Cursor is fine (tmux does not auto-start there).
-- **TERM** — `.tmux.conf` sets `default-terminal "tmux-256color"`. If Cursor or other apps misbehave when launched from *inside* tmux (cursor shape, escape sequences), try `set -g default-terminal "xterm-256color"` in `.tmux.conf` instead.
-- **Escape sequences** — If you see cursor/shape issues, ensure your terminal (e.g. Ghostty, iTerm2) is passing escape sequences through tmux correctly (no restricted mode).
-
 ## Ghostty
 
 Theme: Catppuccin Mocha. **10MB scrollback** (`scrollback-limit`) for long `kubectl logs` / `tail -f` sessions.
 
-## Manage dotfiles with GNU Stow (stew)
+## Manage dotfiles with GNU Stow
 
 Symlink files from this repo into your home directory using GNU Stow:
 
@@ -184,7 +180,7 @@ Symlink files from this repo into your home directory using GNU Stow:
 # From the repository root
 cd ~/dotfiles
 
-# Example: stow the zsh and tmux configs
+# Stow everything (links .zshrc, .tmux.conf, .config, Brewfile, etc. into ~)
 stow -v -t ~ .
 
 # Or stow specific groups if you organize into subfolders, e.g.:
