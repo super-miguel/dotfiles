@@ -40,4 +40,3 @@ brew "zsh-syntax-highlighting"
 
 # Apps (casks)
 cask "ghostty"
-cask "cakebrew"

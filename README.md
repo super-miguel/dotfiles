@@ -4,29 +4,33 @@ Ghostty + zsh + Starship, with tools installed via Homebrew.
 
 ## Quick start
 
-1) Install Homebrew (macOS):
+1. Install Homebrew (macOS):
 
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
-2) Install and configure (from Brewfile):
+1. Install and configure (from Brewfile):
 
 ```bash
 cd ~/dotfiles
 brew bundle --file=Brewfile
 
-# Configuration
+# Configuration — delta (better git diffs)
 git config --global core.pager delta
+git config --global interactive.diffFilter 'delta --color-only'
+git config --global delta.navigate true
+git config --global delta.dark true
+git config --global merge.conflictStyle zdiff3
 ```
 
-3) Reload your shell:
+1. Reload your shell:
 
 ```bash
 source ~/.zshrc
 ```
 
-4) (Optional) Keep everything updated — run periodically (e.g. weekly):
+1. (Optional) Keep everything updated — run periodically (e.g. weekly):
 
 ```bash
 brew update && brew upgrade && brew upgrade --cask --greedy && brew autoremove && brew cleanup
@@ -36,41 +40,39 @@ brew update && brew upgrade && brew upgrade --cask --greedy && brew autoremove &
 - **upgrade** — upgrade all CLI tools  
 - **upgrade --cask --greedy** — upgrade all apps (including those that auto-update)  
 - **autoremove** — remove orphaned dependencies  
-- **cleanup** — remove old versions and prune cache  
+- **cleanup** — remove old versions and prune cache
 
 To update the Brewfile from your current system (e.g. after installing something new): `brew bundle dump --file=~/dotfiles/Brewfile --force`
 
-### Cakebrew (GUI)
-
-**Cakebrew** is a GUI for Homebrew — browse, search, install, uninstall, and update packages. Open it from Applications or run `cakebrew`.
-
 ## Core tools reference
 
-| Tool | What it does | How to use |
-|------|----------------|------------|
-| **bat** | Cat with syntax highlight and paging | `bat file.py`, `kubectl get pods \| bat` |
-| **btop** | Process/CPU/memory viewer (modern htop) | `btop` |
-| **delta** | Better git diff (syntax, side-by-side) | Set pager: `git config --global core.pager delta` |
-| **fd** | Fast find; simpler than `find` | `fd '*.py'`, `fd -e yaml`, `fd config` |
-| **fzf** | Fuzzy finder (files, history, etc.) | **Ctrl-T** file, **Ctrl-R** history (or mcfly), **Alt-C** cd; `hist` in this setup |
-| **helm** | K8s package manager (charts) | `helm list`, `helm install myapp ./chart`, `helm upgrade myapp ./chart` |
-| **gum** | Prompts/confirm/tables for scripts | `gum confirm`, `gum input`, `echo "a\nb" \| gum choose` |
-| **jq** | JSON query and format | `kubectl get pods -o json \| jq '.items[].metadata.name'`, `cat config.json \| jq .` |
-| **just** | Task runner (simpler than make) | `just` (runs default), `just build`, `just test` |
-| **k9s** | TUI for Kubernetes | `k9` or `k9s`; then `/` to filter, `:pods`, `l` logs |
-| **kubeconform** | Validate K8s manifests | `kubeconform my-deploy.yaml`, `kubeconform -summary *.yaml` |
-| **kubectl** | Kubernetes CLI | `k get pods`, `k apply -f deploy.yaml`; see Kubectl section for aliases |
-| **lazygit** | TUI for git (stage, commit, branches) | `lazygit` |
-| **lsd** | Modern ls with icons and colors | `ls` (aliased), `lsd -la` |
-| **mcfly** | Smarter Ctrl-R (fuzzy history) | **Ctrl-R** in shell |
-| **ripgrep** | Fast grep | `rg 'pattern'`, `rg -l 'error' .`, `rg -t py 'import'` |
-| **shellcheck** | Lint shell scripts | `shellcheck script.sh`, `shellcheck .zshrc` |
-| **thefuck** | Fix last command | `fuck` or `f` (aliased) |
-| **tldr** | Short man pages with examples | `tldr kubectl`, `tldr jq`, `tldr tar` |
-| **trivy** | Security scanner (containers, K8s, IaC) | `trivy image myimg`, `trivy fs .`, `trivy k8s cluster` |
-| **uv** | Fast Python package/venv manager | `uv run script.py`, `uv pip install -r requirements.txt` |
-| **yq** | YAML/JSON (like jq for YAML) | `yq '.spec.replicas' deploy.yaml`, `yq -i '.count = 2' file.yaml` |
-| **zoxide** | Smarter cd; learns frequent dirs | `z foo` (jump to path containing foo), `z proj` |
+
+| Tool            | What it does                            | How to use                                                                         |
+| --------------- | --------------------------------------- | ---------------------------------------------------------------------------------- |
+| **bat**         | Cat with syntax highlight and paging    | `bat file.py`, `kubectl get pods | bat`                                            |
+| **btop**        | Process/CPU/memory viewer (modern htop) | `btop`                                                                             |
+| **delta**       | Better git diff (syntax, side-by-side, `n`/`N` navigate, merge conflicts) | See Quick start → Configuration; pager + `interactive.diffFilter` + `delta.navigate` + `merge.conflictStyle zdiff3` |
+| **fd**          | Fast find; simpler than `find`          | `fd '*.py'`, `fd -e yaml`, `fd config`                                             |
+| **fzf**         | Fuzzy finder (files, history, etc.)     | **Ctrl-T** file, **Ctrl-R** history (or mcfly), **Alt-C** cd; `hist` in this setup |
+| **helm**        | K8s package manager (charts)            | `helm list`, `helm install myapp ./chart`, `helm upgrade myapp ./chart`            |
+| **gum**         | Prompts/confirm/tables for scripts      | `gum confirm`, `gum input`, `echo "a\nb" | gum choose`                             |
+| **jq**          | JSON query and format                   | `kubectl get pods -o json | jq '.items[].metadata.name'`, `cat config.json | jq .` |
+| **just**        | Task runner (simpler than make)         | `just` (runs default), `just build`, `just test`                                   |
+| **k9s**         | TUI for Kubernetes                      | `k9` or `k9s`; then `/` to filter, `:pods`, `l` logs                               |
+| **kubeconform** | Validate K8s manifests                  | `kubeconform my-deploy.yaml`, `kubeconform -summary *.yaml`                        |
+| **kubectl**     | Kubernetes CLI                          | `k get pods`, `k apply -f deploy.yaml`; see Kubectl section for aliases            |
+| **lazygit**     | TUI for git (stage, commit, branches)   | `lazygit`                                                                          |
+| **lsd**         | Modern ls with icons and colors         | `ls` (aliased), `lsd -la`                                                          |
+| **mcfly**       | Smarter Ctrl-R (fuzzy history)          | **Ctrl-R** in shell                                                                |
+| **ripgrep**     | Fast grep                               | `rg 'pattern'`, `rg -l 'error' .`, `rg -t py 'import'`                             |
+| **shellcheck**  | Lint shell scripts                      | `shellcheck script.sh`, `shellcheck .zshrc`                                        |
+| **thefuck**     | Fix last command                        | `fuck` or `f` (aliased)                                                            |
+| **tldr**        | Short man pages with examples           | `tldr kubectl`, `tldr jq`, `tldr tar`                                              |
+| **trivy**       | Security scanner (containers, K8s, IaC) | `trivy image myimg`, `trivy fs .`, `trivy k8s cluster`                             |
+| **uv**          | Fast Python package/venv manager        | `uv run script.py`, `uv pip install -r requirements.txt`                           |
+| **yq**          | YAML/JSON (like jq for YAML)            | `yq '.spec.replicas' deploy.yaml`, `yq -i '.count = 2' file.yaml`                  |
+| **zoxide**      | Smarter cd; learns frequent dirs        | `z foo` (jump to path containing foo), `z proj`                                    |
+
 
 *Other core tools: **direnv** (auto env per dir), **mise** (runtime versions), **starship** (prompt), **tmux** (sessions). See sections below.*
 
@@ -83,8 +85,8 @@ Shows directory, git branch/status, **Python** (venv + version when in a project
 ### History
 
 - **50k entries**, shared across sessions, no duplicates. Commands starting with a space are not saved.
-- **`hist`** — FZF over history; pick a line and it’s pasted for you to run or edit. Type to filter.
-- **`hist -n`** — Numbered history (for `!123`).
+- `**hist**` — FZF over history; pick a line and it’s pasted for you to run or edit. Type to filter.
+- `**hist -n**` — Numbered history (for `!123`).
 - **Ctrl-R** — mcfly (fuzzy reverse search, smart ordering).
 - **Up/Down** — With text on the line, zsh-history-substring-search cycles only matching history lines.
 
@@ -96,10 +98,10 @@ Shows directory, git branch/status, **Python** (venv + version when in a project
 
 ### Kubectl
 
-- **`k`** — `kubectl`. **kgp** get pods, **kgs** get svc, **kgd** deploy, **kgn** nodes, **kga** get all.
+- `**k**` — `kubectl`. **kgp** get pods, **kgs** get svc, **kgd** deploy, **kgn** nodes, **kga** get all.
 - **kgpw** — get pods -w (watch). **kd** / **kdp** describe. **kdel** delete. **kaf** / **kdf** apply/delete -f.
 - **kctx** / **kns** — switch context / namespace. **klog** logs. **kexec** exec -it. **k9** — k9s TUI.
-- **`kctxf`** / **`knsf`** — fzf pick context or namespace and switch (no typing names).
+- `**kctxf**` / `**knsf**` — fzf pick context or namespace and switch (no typing names).
 
 ## Tmux
 
@@ -109,10 +111,10 @@ This repo includes a comprehensive `.tmux.conf` with the Catppuccin theme, optim
 
 TPM (Tmux Plugin Manager) is installed via Homebrew and will automatically install plugins defined in `.tmux.conf`.
 
-
 ### Keybinds
 
 #### Basic Navigation
+
 - `Ctrl-a r` - Reload tmux config
 - `Ctrl-a ;` - Split window horizontally
 - `Ctrl-a -` - Split window vertically
@@ -120,10 +122,12 @@ TPM (Tmux Plugin Manager) is installed via Homebrew and will automatically insta
 - `Ctrl-a Space` - Toggle to last window
 
 #### Pane Navigation
+
 - `Ctrl-a + h/j/k/l` - Vim-style pane navigation (h=left, j=down, k=up, l=right)
 - `Ctrl-a + H/J/K/L` - Vim-style pane resizing (H=left, J=down, K=up, L=right)
 
 #### Window Management
+
 - `Option + 1-9` - Switch to window 1-9
 - `Option + 0` - Switch to window 10
 - `Option + n` - Create new window
@@ -170,7 +174,7 @@ twork      # Start work session
 
 ## Ghostty
 
-Theme: Catppuccin Mocha. **10k scrollback** for long `kubectl logs` / `tail -f` sessions.
+Theme: Catppuccin Mocha. **10MB scrollback** (`scrollback-limit`) for long `kubectl logs` / `tail -f` sessions.
 
 ## Manage dotfiles with GNU Stow (stew)
 
@@ -187,3 +191,4 @@ stow -v -t ~ .
 # stow -v -t ~ zsh
 # stow -v -t ~ tmux
 ```
+
