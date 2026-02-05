@@ -30,11 +30,29 @@ if command -v tmux &>/dev/null && [ -z "$TMUX" ]; then
 fi
 
 # General aliases
-alias k="kubectl"
 alias ls="lsd"
 alias vim="nvim"
 alias f="fuck"
 alias cat="bat"
+
+# Kubectl aliases (k = kubectl; kg* = get, kd = describe, kdel = delete, kaf = apply -f)
+alias k="kubectl"
+alias kgp="kubectl get pods"
+alias kgs="kubectl get svc"
+alias kgd="kubectl get deploy"
+alias kgn="kubectl get nodes"
+alias kga="kubectl get all"
+alias kgpw="kubectl get pods -w"
+alias kd="kubectl describe"
+alias kdp="kubectl describe pod"
+alias kdel="kubectl delete"
+alias kaf="kubectl apply -f"
+alias kdf="kubectl delete -f"
+alias kctx="kubectl config use-context"
+alias kns="kubectl config set-context --current --namespace"
+alias klog="kubectl logs"
+alias kexec="kubectl exec -it"
+alias k9="k9s"
 
 # Tmux aliases
 alias t="tmux"
@@ -64,19 +82,38 @@ twork() {
     fi
 }
 
+# Kubectl + fzf: switch context or namespace by picking from list
+kctxf() {
+  local ctx
+  ctx=$(kubectl config get-contexts -o name | fzf -q "$*")
+  [[ -n "$ctx" ]] && kubectl config use-context "$ctx"
+}
+knsf() {
+  local ns
+  ns=$(kubectl get namespaces -o name | sed 's|namespace/||' | fzf -q "$*")
+  [[ -n "$ns" ]] && kubectl config set-context --current --namespace "$ns"
+}
+
 eval $(thefuck --alias)
 eval "$(mcfly init zsh)"
+command -v zoxide &>/dev/null && eval "$(zoxide init zsh)"
 
-# kubectl autocompletion
+# Completions (compinit -C = fast load; run "rm ~/.zcompdump && compinit" to rebuild)
 autoload -Uz compinit
-compinit
+[[ -f ~/.zcompdump ]] && [[ ~/.zshrc -nt ~/.zcompdump ]] && rm -f ~/.zcompdump
+compinit -C
 source <(kubectl completion zsh)
+command -v helm &>/dev/null && source <(helm completion zsh)
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-# FZF
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# FZF keybindings and completion (from Homebrew; no need to run fzf/install)
+_fzf_prefix=$(brew --prefix 2>/dev/null)
+if [ -n "$_fzf_prefix" ] && [ -f "${_fzf_prefix}/opt/fzf/shell/key-bindings.zsh" ]; then
+  source "${_fzf_prefix}/opt/fzf/shell/key-bindings.zsh"
+fi
+if [ -n "$_fzf_prefix" ] && [ -f "${_fzf_prefix}/opt/fzf/shell/completion.zsh" ]; then
+  source "${_fzf_prefix}/opt/fzf/shell/completion.zsh"
+fi
+unset _fzf_prefix
 
 # Better history: `hist` = fzf search & run, `hist -n` = numbered list (for !123)
 hist() {

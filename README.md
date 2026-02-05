@@ -10,48 +10,75 @@ Ghostty + zsh + Starship, with tools installed via Homebrew.
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
-2) Install CLI tools and apps:
+2) Install and configure (from Brewfile):
 
 ```bash
-# Core tools
-brew install \
-  git \
-  starship \
-  neovim \
-  bat \
-  lsd \
-  thefuck \
-  mcfly \
-  direnv \
-  uv \
-  mise \
-  fzf \
-  kubectl \
-  git-flow \
-  tmux \
-  tpm \
-  stow \
-  zsh-autosuggestions \
-  zsh-history-substring-search \
-  zsh-syntax-highlighting
+cd ~/dotfiles
+brew bundle --file=Brewfile
 
-# Apps
-brew install --cask ghostty
+# Configuration
+git config --global core.pager delta
 ```
 
-3) Enable fzf keybindings and completions for zsh:
-
-```bash
-"$(brew --prefix)"/opt/fzf/install --all --no-bash --no-fish | cat
-```
-
-4) Reload your shell:
+3) Reload your shell:
 
 ```bash
 source ~/.zshrc
 ```
 
+4) (Optional) Keep everything updated — run periodically (e.g. weekly):
+
+```bash
+brew update && brew upgrade && brew upgrade --cask --greedy && brew autoremove && brew cleanup
+```
+
+- **update** — refresh Homebrew and formulae list  
+- **upgrade** — upgrade all CLI tools  
+- **upgrade --cask --greedy** — upgrade all apps (including those that auto-update)  
+- **autoremove** — remove orphaned dependencies  
+- **cleanup** — remove old versions and prune cache  
+
+To update the Brewfile from your current system (e.g. after installing something new): `brew bundle dump --file=~/dotfiles/Brewfile --force`
+
+### Cakebrew (GUI)
+
+**Cakebrew** is a GUI for Homebrew — browse, search, install, uninstall, and update packages. Open it from Applications or run `cakebrew`.
+
+## Core tools reference
+
+| Tool | What it does | How to use |
+|------|----------------|------------|
+| **bat** | Cat with syntax highlight and paging | `bat file.py`, `kubectl get pods \| bat` |
+| **btop** | Process/CPU/memory viewer (modern htop) | `btop` |
+| **delta** | Better git diff (syntax, side-by-side) | Set pager: `git config --global core.pager delta` |
+| **fd** | Fast find; simpler than `find` | `fd '*.py'`, `fd -e yaml`, `fd config` |
+| **fzf** | Fuzzy finder (files, history, etc.) | **Ctrl-T** file, **Ctrl-R** history (or mcfly), **Alt-C** cd; `hist` in this setup |
+| **helm** | K8s package manager (charts) | `helm list`, `helm install myapp ./chart`, `helm upgrade myapp ./chart` |
+| **gum** | Prompts/confirm/tables for scripts | `gum confirm`, `gum input`, `echo "a\nb" \| gum choose` |
+| **jq** | JSON query and format | `kubectl get pods -o json \| jq '.items[].metadata.name'`, `cat config.json \| jq .` |
+| **just** | Task runner (simpler than make) | `just` (runs default), `just build`, `just test` |
+| **k9s** | TUI for Kubernetes | `k9` or `k9s`; then `/` to filter, `:pods`, `l` logs |
+| **kubeconform** | Validate K8s manifests | `kubeconform my-deploy.yaml`, `kubeconform -summary *.yaml` |
+| **kubectl** | Kubernetes CLI | `k get pods`, `k apply -f deploy.yaml`; see Kubectl section for aliases |
+| **lazygit** | TUI for git (stage, commit, branches) | `lazygit` |
+| **lsd** | Modern ls with icons and colors | `ls` (aliased), `lsd -la` |
+| **mcfly** | Smarter Ctrl-R (fuzzy history) | **Ctrl-R** in shell |
+| **ripgrep** | Fast grep | `rg 'pattern'`, `rg -l 'error' .`, `rg -t py 'import'` |
+| **shellcheck** | Lint shell scripts | `shellcheck script.sh`, `shellcheck .zshrc` |
+| **thefuck** | Fix last command | `fuck` or `f` (aliased) |
+| **tldr** | Short man pages with examples | `tldr kubectl`, `tldr jq`, `tldr tar` |
+| **trivy** | Security scanner (containers, K8s, IaC) | `trivy image myimg`, `trivy fs .`, `trivy k8s cluster` |
+| **uv** | Fast Python package/venv manager | `uv run script.py`, `uv pip install -r requirements.txt` |
+| **yq** | YAML/JSON (like jq for YAML) | `yq '.spec.replicas' deploy.yaml`, `yq -i '.count = 2' file.yaml` |
+| **zoxide** | Smarter cd; learns frequent dirs | `z foo` (jump to path containing foo), `z proj` |
+
+*Other core tools: **direnv** (auto env per dir), **mise** (runtime versions), **starship** (prompt), **tmux** (sessions). See sections below.*
+
 ## Zsh
+
+### Prompt (Starship)
+
+Shows directory, git branch/status, **Python** (venv + version when in a project), AWS profile, GCP project, and Kubernetes context/namespace. Theme: Catppuccin Mocha.
 
 ### History
 
@@ -66,6 +93,13 @@ source ~/.zshrc
 - **zsh-autosuggestions** — Gray suggestion from history; → to accept.
 - **zsh-history-substring-search** — Type a prefix, then Up/Down to cycle matching history.
 - **zsh-syntax-highlighting** — Must be last; colors the command line.
+
+### Kubectl
+
+- **`k`** — `kubectl`. **kgp** get pods, **kgs** get svc, **kgd** deploy, **kgn** nodes, **kga** get all.
+- **kgpw** — get pods -w (watch). **kd** / **kdp** describe. **kdel** delete. **kaf** / **kdf** apply/delete -f.
+- **kctx** / **kns** — switch context / namespace. **klog** logs. **kexec** exec -it. **k9** — k9s TUI.
+- **`kctxf`** / **`knsf`** — fzf pick context or namespace and switch (no typing names).
 
 ## Tmux
 
@@ -130,9 +164,13 @@ twork      # Start work session
 
 ### Cursor + tmux troubleshooting
 
-- **Launch Cursor outside tmux** — Open Cursor from the Dock/Spotlight or from a terminal *before* attaching to tmux. Don’t run the Cursor GUI from inside a tmux pane; the integrated terminal inside Cursor is fine (tmux doesn’t auto-start there).
+- **Launch Cursor outside tmux** — Open Cursor from the Dock/Spotlight or from a terminal *before* attaching to tmux. Do not run the Cursor GUI from inside a tmux pane; the integrated terminal inside Cursor is fine (tmux does not auto-start there).
 - **TERM** — `.tmux.conf` sets `default-terminal "tmux-256color"`. If Cursor or other apps misbehave when launched from *inside* tmux (cursor shape, escape sequences), try `set -g default-terminal "xterm-256color"` in `.tmux.conf` instead.
 - **Escape sequences** — If you see cursor/shape issues, ensure your terminal (e.g. Ghostty, iTerm2) is passing escape sequences through tmux correctly (no restricted mode).
+
+## Ghostty
+
+Theme: Catppuccin Mocha. **10k scrollback** for long `kubectl logs` / `tail -f` sessions.
 
 ## Manage dotfiles with GNU Stow (stew)
 

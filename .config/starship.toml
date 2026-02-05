@@ -9,6 +9,7 @@ $directory\
 $git_branch\
 $git_status \
  \
+$python\
 $golang\
 $aws\
 $gcloud\
@@ -27,6 +28,12 @@ disabled = true
 
 [os]
 disabled = true
+
+# Python module (venv + version; only show when active)
+[python]
+format = '[$symbol$pyenv_prefix($version )(\($virtualenv\) )]($style)'
+symbol = "🐍 "
+style = "bold fg:yellow"
 
 # Golang module configuration - remove "via"
 [golang]
