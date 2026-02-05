@@ -1,7 +1,22 @@
 # .zshrc
-# Skip loading the rest when Cursor Agent is running (avoids tmux, starship, etc. in agent shell)
-if [[ "$PAGER" == "head -n 10000 | cat" || "$COMPOSER_NO_INTERACTION" == "1" ]]; then
-  return
+# Cursor Agent: proper command detection (run once: curl -L https://iterm2.com/shell_integration/zsh -o ~/.iterm2_shell_integration.zsh)
+if [[ -n $CURSOR_TRACE_ID ]]; then
+  PROMPT_EOL_MARK=""
+  test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+  precmd() { print -Pn "\e]133;D;%?\a" }
+  preexec() { print -Pn "\e]133;C;\a" }
+fi
+
+# Simpler theme in Cursor (ZSH_THEME only applies if you use oh-my-zsh; this repo uses Starship below)
+if [[ -n $CURSOR_TRACE_ID ]]; then
+  ZSH_THEME="robbyrussell"
+else
+  ZSH_THEME="powerlevel10k/powerlevel10k"
+fi
+
+# p10k: only load when not in Cursor
+if [[ ! -n $CURSOR_TRACE_ID ]]; then
+  [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 fi
 
 # History: big, shared across sessions, no dupes, with timestamps
@@ -17,18 +32,13 @@ setopt HIST_REDUCE_BLANKS        # trim extra blanks
 
 eval "$(starship init zsh)"
 
-# Auto-start tmux in normal terminals, but NOT in Cursor/VS Code integrated terminals
-if command -v tmux &>/dev/null && [ -z "$TMUX" ]; then
-  case "$TERM_PROGRAM" in
-    vscode|Cursor) ;;
-    *)
-      if tmux has-session 2>/dev/null; then
-        exec tmux attach-session
-      else
-        exec tmux new-session
-      fi
-      ;;
-  esac
+# Auto-start tmux in normal terminals only (never inside Cursor/VS Code — avoids "Unable to resolve your shell environment")
+if command -v tmux &>/dev/null && [ -z "$TMUX" ] && [[ "$TERM_PROGRAM" != "vscode" && "$TERM_PROGRAM" != "Cursor" && -z $CURSOR_TRACE_ID ]]; then
+  if tmux has-session 2>/dev/null; then
+    exec tmux attach-session
+  else
+    exec tmux new-session
+  fi
 fi
 
 # General aliases
@@ -135,16 +145,19 @@ eval "$(mise activate zsh)"
 
 # Homebrew zsh plugins
 # zsh-autosuggestions should be sourced after completion is set up
-if [ -f "$(brew --prefix)"/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
-  source "$(brew --prefix)"/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+if [ -f "$(brew --prefix 2>/dev/null)"/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+  source "$(brew --prefix 2>/dev/null)"/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 fi
 
 # Type a prefix, then Up/Down to cycle through matching history only
-if [ -f "$(brew --prefix)"/share/zsh-history-substring-search/zsh-history-substring-search.zsh ]; then
-  source "$(brew --prefix)"/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+if [ -f "$(brew --prefix 2>/dev/null)"/share/zsh-history-substring-search/zsh-history-substring-search.zsh ]; then
+  source "$(brew --prefix 2>/dev/null)"/share/zsh-history-substring-search/zsh-history-substring-search.zsh
 fi
 
 # zsh-syntax-highlighting must be last
-if [ -f "$(brew --prefix)"/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
-  source "$(brew --prefix)"/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+if [ -f "$(brew --prefix 2>/dev/null)"/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
+  source "$(brew --prefix 2>/dev/null)"/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
+
+# Ensure sourced .zshrc exits 0 (fixes Cursor "Unable to resolve your shell environment" when brew etc. not in PATH)
+true
