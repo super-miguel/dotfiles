@@ -29,6 +29,7 @@ setopt SHARE_HISTORY             # share history across sessions
 setopt HIST_IGNORE_ALL_DUPS      # drop older duplicate entries
 setopt HIST_IGNORE_SPACE         # ignore commands starting with space
 setopt HIST_REDUCE_BLANKS        # trim extra blanks
+setopt NO_BEEP                   # turn off terminal beep
 
 eval "$(starship init zsh)"
 
@@ -46,6 +47,16 @@ alias ls="lsd"
 alias vim="nvim"
 alias f="fuck"
 alias cat="bat"
+
+# Git (optional short aliases)
+alias g="git"
+alias gst="git status"
+alias gco="git checkout"
+alias gd="git diff"
+alias gl="git pull"
+alias gp="git push"
+alias gb="git branch"
+alias glog="git log --oneline -20"
 
 # Kubectl aliases (k = kubectl; kg* = get, kd = describe, kdel = delete, kaf = apply -f)
 alias k="kubectl"

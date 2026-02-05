@@ -16,12 +16,10 @@ Ghostty + zsh + Starship, with tools installed via Homebrew.
 cd ~/dotfiles
 brew bundle --file=Brewfile
 
-# Configuration — delta (better git diffs)
-git config --global core.pager delta
-git config --global interactive.diffFilter 'delta --color-only'
-git config --global delta.navigate true
-git config --global delta.dark true
-git config --global merge.conflictStyle zdiff3
+# Link config into home
+stow -v -t ~ .
+
+# Git/delta and identity: run the manual commands below (per machine)
 ```
 
 3) Reload your shell:
@@ -44,6 +42,20 @@ brew update && brew upgrade && brew upgrade --cask --greedy && brew autoremove &
 
 To update the Brewfile from your current system (e.g. after installing something new): `brew bundle dump --file=~/dotfiles/Brewfile --force`
 
+**Manual Git/delta setup** — run these on each machine to enable delta and set your identity:
+
+```bash
+git config --global core.pager delta
+git config --global interactive.diffFilter 'delta --color-only'
+git config --global delta.navigate true
+git config --global delta.dark true
+git config --global merge.conflictStyle zdiff3
+git config --global init.defaultBranch main
+git config --global pull.rebase true
+git config --global user.name "Your Name"
+git config --global user.email "you@example.com"
+```
+
 `.zshrc` includes a guard at the top so Cursor Agent shells skip the rest of the config (no tmux, starship, etc.) when `PAGER` or `COMPOSER_NO_INTERACTION` is set.
 
 ## Core tools reference
@@ -53,7 +65,7 @@ To update the Brewfile from your current system (e.g. after installing something
 | --------------- | --------------------------------------- | ---------------------------------------------------------------------------------- |
 | **bat**         | Cat with syntax highlight and paging    | `bat file.py`, `kubectl get pods | bat`                                            |
 | **btop**        | Process/CPU/memory viewer (modern htop) | `btop`                                                                             |
-| **delta**       | Better git diff (syntax, side-by-side, `n`/`N` navigate, merge conflicts) | See Quick start → Configuration; pager + `interactive.diffFilter` + `delta.navigate` + `merge.conflictStyle zdiff3` |
+| **delta**       | Better git diff (syntax, side-by-side, `n`/`N` navigate, merge conflicts) | See *Manual Git/delta setup* below. |
 | **fd**          | Fast find; simpler than `find`          | `fd '*.py'`, `fd -e yaml`, `fd config`                                             |
 | **fzf**         | Fuzzy finder (files, history, etc.)     | **Ctrl-T** file, **Ctrl-R** history (or mcfly), **Alt-C** cd; `hist` in this setup |
 | **helm**        | K8s package manager (charts)            | `helm list`, `helm install myapp ./chart`, `helm upgrade myapp ./chart`            |
@@ -172,19 +184,27 @@ twork      # Start work session
 
 Theme: Catppuccin Mocha. **10MB scrollback** (`scrollback-limit`) for long `kubectl logs` / `tail -f` sessions.
 
-## Manage dotfiles with GNU Stow
+## Direnv and .envrc.example
 
-Symlink files from this repo into your home directory using GNU Stow:
+**direnv** runs a script (`.envrc`) when you `cd` into a directory, so you get the right Node/Python version, env vars, or API keys **per project** without touching your global shell.
+
+- The **real `.envrc`** often has secrets or machine-specific paths, so it’s in `.gitignore` and not committed.
+- **`.envrc.example`** is a **committed template** that shows what the project expects (e.g. `use node`, `use python`, `export API_KEY=...`). Anyone cloning the repo can copy it to `.envrc`, fill in values, run `direnv allow`, and get the same environment.
+
+This repo includes an `.envrc.example` you can copy into **other** projects (apps, services) as a starting point. In a project:
 
 ```bash
-# From the repository root
+cp ~/dotfiles/.envrc.example .envrc
+# Edit .envrc (uncomment use node/python, set env vars)
+direnv allow
+```
+
+## Manage dotfiles with GNU Stow
+
+Stow links `.zshrc`, `.tmux.conf`, `.config/`, etc. into `~`. There is no `.gitconfig` in the repo; use the manual Git/delta commands above on each machine (and set `user.name` / `user.email` per system).
+
+```bash
 cd ~/dotfiles
-
-# Stow everything (links .zshrc, .tmux.conf, .config, Brewfile, etc. into ~)
 stow -v -t ~ .
-
-# Or stow specific groups if you organize into subfolders, e.g.:
-# stow -v -t ~ zsh
-# stow -v -t ~ tmux
 ```
 

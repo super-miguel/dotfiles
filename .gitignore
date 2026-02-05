@@ -27,7 +27,8 @@
 .bash_history
 .python_history
 
-# direnv and virtual envs
+# direnv and virtual envs (.envrc often has secrets; use .envrc.example as template)
+.envrc
 .direnv/
 .venv/
 venv/

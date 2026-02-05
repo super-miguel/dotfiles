@@ -1,5 +1,7 @@
 theme = catppuccin-mocha
 font-size = 12
+# Nerd Font for icons in prompt (install: brew install --cask font-jetbrains-mono-nerd-font)
+font-family = "JetBrainsMono Nerd Font"
 background-opacity = 0.7
 background-blur-radius = 20
 mouse-hide-while-typing = true

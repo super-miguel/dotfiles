@@ -40,3 +40,6 @@ brew "zsh-syntax-highlighting"
 
 # Apps (casks)
 cask "ghostty"
+
+# Fonts (Nerd Font for Ghostty / Starship icons; fonts are in main homebrew-cask now)
+cask "font-jetbrains-mono-nerd-font"

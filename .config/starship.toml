@@ -1,7 +1,8 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
-# Performance optimization
+# Performance optimization (don't block prompt on slow commands e.g. big git repos)
 scan_timeout = 10
+command_timeout = 10000
 
 # Custom format - start minimal, add modules as needed
 format = """
@@ -14,6 +15,8 @@ $golang\
 $aws\
 $gcloud\
 $kubernetes\
+$docker_context\
+$time\
 $line_break\
 $character"""
 
@@ -72,6 +75,17 @@ disabled = false
 symbol = "☸️ "
 format = '[$symbol$context/$namespace](bold fg:mauve)'
 disabled = false
+
+# Time (right side of prompt)
+[time]
+format = '[$time]($style)'
+style = 'bold dimmed'
+
+# Docker context (when using Docker)
+[docker_context]
+format = '[$symbol$context]($style)'
+symbol = '🐳 '
+style = 'bold blue'
 
 [palettes.catppuccin_mocha]
 rosewater = "#f5e0dc"

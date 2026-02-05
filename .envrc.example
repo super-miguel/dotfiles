@@ -1,0 +1,23 @@
+# .envrc.example — copy to .envrc in your project, edit, then run: direnv allow
+#
+# When you cd into a directory with .envrc, direnv runs it and sets env / tools
+# per directory (Node version, Python venv, API keys, etc.). The real .envrc
+# is usually not committed (secrets, machine-specific paths). This file is a
+# template so others (or you on a new machine) know what to put in .envrc.
+
+# Use a Node version (mise)
+# use node
+
+# Use a Python version (mise)
+# use python
+
+# Or pin exact versions (mise creates .tool-versions)
+# use node@20
+# use python@3.12
+
+# Export env vars (replace with real values in .envrc)
+# export API_URL=https://api.example.com
+# export API_KEY=your_key_here
+
+# Load a .env file (if you use one)
+# dotenv
