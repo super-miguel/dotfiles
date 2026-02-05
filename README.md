@@ -102,12 +102,10 @@ Shows directory, git branch/status, **Python** (venv + version when in a project
 - **`hist`** — FZF over history; pick a line and it’s pasted for you to run or edit. Type to filter.
 - **`hist -n`** — Numbered history (for `!123`).
 - **Ctrl-R** — mcfly (fuzzy reverse search, smart ordering).
-- **Up/Down** — With text on the line, zsh-history-substring-search cycles only matching history lines.
 
 ### Plugins (Homebrew)
 
 - **zsh-autosuggestions** — Gray suggestion from history; → to accept.
-- **zsh-history-substring-search** — Type a prefix, then Up/Down to cycle matching history.
 - **zsh-syntax-highlighting** — Must be last; colors the command line.
 
 ### Kubectl

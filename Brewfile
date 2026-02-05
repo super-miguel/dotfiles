@@ -35,7 +35,6 @@ brew "tmux"
 brew "tpm"
 brew "stow"
 brew "zsh-autosuggestions"
-brew "zsh-history-substring-search"
 brew "zsh-syntax-highlighting"
 
 # Apps (casks)

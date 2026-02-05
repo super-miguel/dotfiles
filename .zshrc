@@ -160,11 +160,6 @@ if [ -f "$(brew --prefix 2>/dev/null)"/share/zsh-autosuggestions/zsh-autosuggest
   source "$(brew --prefix 2>/dev/null)"/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 fi
 
-# Type a prefix, then Up/Down to cycle through matching history only
-if [ -f "$(brew --prefix 2>/dev/null)"/share/zsh-history-substring-search/zsh-history-substring-search.zsh ]; then
-  source "$(brew --prefix 2>/dev/null)"/share/zsh-history-substring-search/zsh-history-substring-search.zsh
-fi
-
 # zsh-syntax-highlighting must be last
 if [ -f "$(brew --prefix 2>/dev/null)"/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
   source "$(brew --prefix 2>/dev/null)"/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
