@@ -32,6 +32,7 @@ brew install \
   tpm \
   stow \
   zsh-autosuggestions \
+  zsh-history-substring-search \
   zsh-syntax-highlighting
 
 # Apps
@@ -49,6 +50,22 @@ brew install --cask ghostty
 ```bash
 source ~/.zshrc
 ```
+
+## Zsh
+
+### History
+
+- **50k entries**, shared across sessions, no duplicates. Commands starting with a space are not saved.
+- **`hist`** — FZF over history; pick a line and it’s pasted for you to run or edit. Type to filter.
+- **`hist -n`** — Numbered history (for `!123`).
+- **Ctrl-R** — mcfly (fuzzy reverse search, smart ordering).
+- **Up/Down** — With text on the line, zsh-history-substring-search cycles only matching history lines.
+
+### Plugins (Homebrew)
+
+- **zsh-autosuggestions** — Gray suggestion from history; → to accept.
+- **zsh-history-substring-search** — Type a prefix, then Up/Down to cycle matching history.
+- **zsh-syntax-highlighting** — Must be last; colors the command line.
 
 ## Tmux
 
@@ -94,10 +111,14 @@ tdev       # Create/attach to "dev" session
 twork      # Create/attach to "work" session
 ```
 
+### Auto-start
+
+Tmux auto-starts when you open a **normal** terminal (Terminal.app, iTerm, etc.): it attaches to an existing session or creates one. It does **not** auto-start in Cursor or VS Code integrated terminals.
+
 ### Usage
 
 ```bash
-# Start tmux (plugins will be automatically installed by TPM):
+# In a normal terminal, tmux starts automatically. Or run manually:
 tmux
 
 # Or use helper functions:
@@ -106,6 +127,12 @@ twork      # Start work session
 ```
 
 **Note:** If you need to manually install/update plugins, press `Ctrl-a` then `I` (capital i) while in tmux.
+
+### Cursor + tmux troubleshooting
+
+- **Launch Cursor outside tmux** — Open Cursor from the Dock/Spotlight or from a terminal *before* attaching to tmux. Don’t run the Cursor GUI from inside a tmux pane; the integrated terminal inside Cursor is fine (tmux doesn’t auto-start there).
+- **TERM** — `.tmux.conf` sets `default-terminal "tmux-256color"`. If Cursor or other apps misbehave when launched from *inside* tmux (cursor shape, escape sequences), try `set -g default-terminal "xterm-256color"` in `.tmux.conf` instead.
+- **Escape sequences** — If you see cursor/shape issues, ensure your terminal (e.g. Ghostty, iTerm2) is passing escape sequences through tmux correctly (no restricted mode).
 
 ## Manage dotfiles with GNU Stow (stew)
 

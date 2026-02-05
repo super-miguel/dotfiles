@@ -41,3 +41,4 @@ venv/
 .config/raycast
 .config/zed
 .config/thefuck
+.config/mise
