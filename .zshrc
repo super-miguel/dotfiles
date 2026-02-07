@@ -1,4 +1,11 @@
 # .zshrc
+# Ensure Homebrew (and kubectl, etc.) are in PATH for non-login shells (e.g. tmux panes)
+if [[ -x /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -x /usr/local/bin/brew ]]; then
+  eval "$(/usr/local/bin/brew shellenv)"
+fi
+
 # Cursor Agent: proper command detection (run once: curl -L https://iterm2.com/shell_integration/zsh -o ~/.iterm2_shell_integration.zsh)
 if [[ -n $CURSOR_TRACE_ID ]]; then
   PROMPT_EOL_MARK=""
@@ -125,7 +132,10 @@ command -v zoxide &>/dev/null && eval "$(zoxide init zsh)"
 autoload -Uz compinit
 [[ -f ~/.zcompdump ]] && [[ ~/.zshrc -nt ~/.zcompdump ]] && rm -f ~/.zcompdump
 compinit -C
-source <(kubectl completion zsh)
+if command -v kubectl &>/dev/null; then
+  source <(kubectl completion zsh)
+  compdef _kubectl k
+fi
 command -v helm &>/dev/null && source <(helm completion zsh)
 
 # FZF keybindings and completion (from Homebrew; no need to run fzf/install)
