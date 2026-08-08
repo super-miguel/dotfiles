@@ -37,6 +37,10 @@ venv/
 .tmux/plugins/
 .tmux/resurrect/
 
+# Herdr keeps its runtime socket/session state next to config.toml — track only the config
+.config/herdr/*
+!.config/herdr/config.toml
+
 # Neovim local state (ignore full config if you manage it elsewhere)
 .config/nvim
 .config/raycast

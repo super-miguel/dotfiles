@@ -1,0 +1,8 @@
+# ~/.config/herdr/config.toml
+# Full default reference: `herdr --default-config`
+
+[theme]
+name = "catppuccin"   # match tmux/starship/Ghostty (Catppuccin Mocha)
+
+[keys]
+prefix = "ctrl+a"      # match the old tmux prefix

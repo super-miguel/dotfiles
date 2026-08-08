@@ -33,6 +33,8 @@ brew "shellcheck"
 brew "git-flow"
 brew "tmux"
 brew "tpm"
+brew "herdr"
+brew "ccusage"  # Claude Code token/cost statusline
 brew "stow"
 brew "zsh-autosuggestions"
 brew "zsh-syntax-highlighting"

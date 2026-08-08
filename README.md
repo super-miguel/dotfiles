@@ -70,6 +70,8 @@ git config --global user.email "you@example.com"
 | **fzf**         | Fuzzy finder (files, history, etc.)     | **Ctrl-T** file, **Ctrl-R** history (or mcfly), **Alt-C** cd; `hist` in this setup |
 | **helm**        | K8s package manager (charts)            | `helm list`, `helm install myapp ./chart`, `helm upgrade myapp ./chart`            |
 | **gum**         | Prompts/confirm/tables for scripts      | `gum confirm`, `gum input`, `echo "a\nb" | gum choose`                             |
+| **herdr**       | Agent-aware terminal multiplexer (daily-driver, replaces tmux) | `herdr` (auto-starts); `herdr agent list`; see Herdr section        |
+| **ccusage**     | Claude Code token/cost statusline       | Runs automatically via `~/.claude/settings.json`; see Claude Code section |
 | **jq**          | JSON query and format                   | `kubectl get pods -o json | jq '.items[].metadata.name'`, `cat config.json | jq .` |
 | **just**        | Task runner (simpler than make)         | `just` (runs default), `just build`, `just test`                                   |
 | **k9s**         | TUI for Kubernetes                      | `k9` or `k9s`; then `/` to filter, `:pods`, `l` logs                               |
@@ -115,9 +117,48 @@ Shows directory, git branch/status, **Python** (venv + version when in a project
 - **kctx** / **kns** — switch context / namespace. **klog** logs. **kexec** exec -it. **k9** — k9s TUI.
 - **`kctxf`** / **`knsf`** — fzf pick context or namespace and switch (no typing names).
 
-## Tmux
+## Herdr
 
-This repo includes a comprehensive `.tmux.conf` with the Catppuccin theme, optimized keybinds, and session management.
+[herdr](https://herdr.dev) is an agent-aware terminal multiplexer — it understands panes running coding agents (idle/working/blocked/done) in addition to plain shells. It's the daily-driver multiplexer in this setup; tmux stays configured as a manual/SSH fallback (see below).
+
+- **Config:** `.config/herdr/config.toml` (theme = Catppuccin to match tmux/starship/Ghostty, prefix = `Ctrl-a` to match the old tmux muscle memory). Only `config.toml` is git-tracked — herdr keeps its live socket/session state in the same directory, so `.gitignore` excludes everything else there. Full default reference: `herdr --default-config`.
+- **Auto-start:** Like tmux before it, herdr auto-starts in normal terminals (Terminal.app, Ghostty, iTerm) and skips Cursor/VS Code integrated terminals. If `herdr` isn't installed (e.g. a bastion host without Homebrew), the shell falls back to tmux.
+- **Aliases & helpers:**
+  ```bash
+  h          # herdr (attach or launch the persistent session)
+  hls        # herdr session list
+  hdev       # create/attach the "dev" named session
+  hwork      # create/attach the "work" named session
+  ```
+
+### Claude Code integration (lifecycle status in herdr's UI)
+
+Run this once per machine (writes a hook into `~/.claude/hooks/`, so it isn't stowed and needs re-running per machine — same reasoning as the manual Git/delta setup above):
+
+```bash
+herdr integration install claude
+```
+
+This makes herdr classify Claude Code panes as `idle` / `working` / `blocked` / `done` in its UI. **It does not report token usage or cost** — herdr has no such tracking (confirmed against `herdr agent get`/`herdr --skill`, neither expose it). For token/cost, see **Claude Code → statusline** below.
+
+**Optional:** if you want herdr sessions to survive fully quitting the terminal app (not just detaching), run `brew services start herdr` to keep its server running in the background — tmux does this implicitly via its own detached server.
+
+## Claude Code
+
+### Statusline (token/cost usage)
+
+Every Claude Code session shows a live line at the bottom with token count, context-window %, and session/day/hour cost, via [ccusage](https://github.com/ccusage/ccusage). It's a Homebrew formula (`brew "ccusage"` in the Brewfile), so `brew bundle` installs it like everything else — no separate step.
+
+`~/.claude/settings.json` itself isn't stowed (it also holds session/project history you don't want in git), so the `statusLine` key still needs to be merged in once per machine — this `jq` one-liner does it without clobbering whatever's already in the file (theme, hooks, etc.):
+
+```bash
+jq '.statusLine = {"type":"command","command":"ccusage statusline","padding":0}' \
+  ~/.claude/settings.json > /tmp/claude-settings.json && mv /tmp/claude-settings.json ~/.claude/settings.json
+```
+
+## Tmux (manual / fallback)
+
+This repo includes a comprehensive `.tmux.conf` with the Catppuccin theme, optimized keybinds, and session management. It's no longer auto-started by default — [herdr](#herdr) is — but stays fully configured for manual use and as the automatic fallback on hosts without herdr.
 
 ### Installation
 
@@ -163,7 +204,7 @@ twork      # Create/attach to "work" session
 
 ### Auto-start
 
-Tmux auto-starts when you open a **normal** terminal (Terminal.app, iTerm, etc.): it attaches to an existing session or creates one. It does **not** auto-start in Cursor or VS Code integrated terminals.
+Tmux only auto-starts as a **fallback**, when `herdr` isn't installed on the machine (see [Herdr](#herdr)). When it does run, it attaches to an existing session or creates one, in **normal** terminals (Terminal.app, iTerm, etc.) — never in Cursor or VS Code integrated terminals.
 
 ### Usage
 

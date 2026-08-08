@@ -48,12 +48,17 @@ if [[ -o interactive ]] && [[ "$TERM" != "dumb" ]] && command -v starship &>/dev
   eval "$(starship init zsh)"
 fi
 
-# Auto-start tmux in normal terminals only (never inside Cursor/VS Code — avoids "Unable to resolve your shell environment")
-if [[ -t 1 ]] && command -v tmux &>/dev/null && [ -z "$TMUX" ] && [[ "$TERM_PROGRAM" != "vscode" && "$TERM_PROGRAM" != "Cursor" && -z $CURSOR_TRACE_ID ]]; then
-  if tmux has-session 2>/dev/null; then
-    exec tmux attach-session
-  else
-    exec tmux new-session
+# Auto-start a multiplexer in normal terminals only (never inside Cursor/VS Code — avoids "Unable to resolve your shell environment")
+# Prefer herdr; fall back to tmux where herdr isn't installed (e.g. a bastion/jump host).
+if [[ -t 1 ]] && [[ -z "$HERDR_ENV" && -z "$TMUX" ]] && [[ "$TERM_PROGRAM" != "vscode" && "$TERM_PROGRAM" != "Cursor" && -z $CURSOR_TRACE_ID ]]; then
+  if command -v herdr &>/dev/null; then
+    exec herdr
+  elif command -v tmux &>/dev/null; then
+    if tmux has-session 2>/dev/null; then
+      exec tmux attach-session
+    else
+      exec tmux new-session
+    fi
   fi
 fi
 
@@ -92,7 +97,13 @@ alias klog="kubectl logs"
 alias kexec="kubectl exec -it"
 alias k9="k9s"
 
-# Tmux aliases
+# Herdr aliases (daily-driver multiplexer; see README)
+alias h="herdr"
+alias hls="herdr session list"
+hdev()  { herdr --session dev }
+hwork() { herdr --session work }
+
+# Tmux aliases (manual/SSH fallback; see README)
 alias t="tmux"
 alias ta="tmux attach"
 alias tat="tmux attach -t"
@@ -149,6 +160,7 @@ if command -v kubectl &>/dev/null; then
   compdef _kubectl k
 fi
 command -v helm &>/dev/null && source <(helm completion zsh)
+command -v herdr &>/dev/null && source <(herdr completion zsh)
 
 # FZF keybindings and completion (from Homebrew; no need to run fzf/install)
 _fzf_prefix=$(brew --prefix 2>/dev/null)
