@@ -56,6 +56,12 @@ git config --global user.name "Your Name"
 git config --global user.email "you@example.com"
 ```
 
+**Manual `gh` setup** — same reasoning as git: `~/.config/gh/hosts.yml` holds a live auth token, so the whole directory is gitignored rather than stowed. Run `gh auth login` once per machine, then reapply the one preference worth keeping:
+
+```bash
+gh alias set co "pr checkout"
+```
+
 `.zshrc` includes a guard at the top so Cursor Agent shells skip the rest of the config (no tmux, starship, etc.) when `PAGER` or `COMPOSER_NO_INTERACTION` is set.
 
 ## Core tools reference

@@ -49,3 +49,7 @@ venv/
 .config/mise
 .config/argocd
 .config/op
+
+# gh CLI: hosts.yml holds a live auth token — never track this directory.
+# Preferences worth keeping (e.g. the `co` alias) are documented in the README instead.
+.config/gh
